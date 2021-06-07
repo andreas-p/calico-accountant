@@ -1,8 +1,10 @@
 all: build
 
 ENVVAR = GOOS=linux GOARCH=amd64
-TAG = v0.1.6
+TAG = v0.1.7
 APP_NAME = calico-accountant
+REPO = andreas-p
+IMAGE_TAG = $(REPO)/$(APP_NAME):$(TAG)
 
 clean:
 	rm -f $(APP_NAME)
@@ -19,6 +21,10 @@ test-unit: clean fmt build
 # Make the container using docker multi-stage build process
 # So you don't necessarily have to install golang to make the container
 container:
-	docker build -f Dockerfile -t monzo/$(APP_NAME):$(TAG) .
+	docker build -f Dockerfile -t $(IMAGE_TAG) .
+
+
+binary: container
+	docker run --rm $(IMAGE_TAG) cat /calico-accountant >$(APP_NAME)
 
 .PHONY: all clean fmt build container

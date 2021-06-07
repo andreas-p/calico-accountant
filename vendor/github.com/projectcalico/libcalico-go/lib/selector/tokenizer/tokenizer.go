@@ -41,6 +41,7 @@ const (
 	TokStartsWith
 	TokEndsWith
 	TokAll
+	TokGlobal
 	TokHas
 	TokLParen
 	TokRParen
@@ -64,6 +65,7 @@ const (
 	LabelKeyMatcher = `[a-zA-Z0-9_./-]{1,512}`
 	hasExpr         = `has\(\s*(` + LabelKeyMatcher + `)\s*\)`
 	allExpr         = `all\(\s*\)`
+	globalExpr      = `global\(\s*\)`
 	notInExpr       = `not\s*in\b`
 	inExpr          = `in\b`
 )
@@ -75,6 +77,7 @@ var (
 	endsWithRegex   = regexp.MustCompile(`^ends\s*with`)
 	hasRegex        = regexp.MustCompile("^" + hasExpr)
 	allRegex        = regexp.MustCompile("^" + allExpr)
+	globalRegex     = regexp.MustCompile("^" + globalExpr)
 	notInRegex      = regexp.MustCompile("^" + notInExpr)
 	inRegex         = regexp.MustCompile("^" + inExpr)
 )
@@ -199,6 +202,10 @@ func Tokenize(input string) (tokens []Token, err error) {
 				// Found "all"
 				tokens = append(tokens, Token{TokAll, nil})
 				input = input[idxs[1]:]
+			} else if idxs := globalRegex.FindStringIndex(input); idxs != nil {
+				// Found "global"
+				tokens = append(tokens, Token{TokGlobal, nil})
+				input = input[idxs[1]:]				
 			} else if idxs := identifierRegex.FindStringIndex(input); idxs != nil {
 				// Found "label"
 				endIndex := idxs[1]

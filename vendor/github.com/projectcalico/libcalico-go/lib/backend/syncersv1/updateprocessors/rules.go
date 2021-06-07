@@ -55,6 +55,7 @@ func entityRuleAPIV2TOBackend(er *apiv3.EntityRule, ns string) (nsSelector, sele
 		// all endpoints, translate this to an equivalent expressions which means select any workload that
 		// is in a namespace.
 		nsSelector = strings.Replace(nsSelector, "all()", "has(projectcalico.org/namespace)", -1)
+		nsSelector = strings.Replace(nsSelector, "global()", "!has(projectcalico.org/namespace)", -1)
 	} else if ns != "" {
 		// No namespace selector was given and this is a namespaced network policy,
 		// so the rule applies only to its own namespace.
