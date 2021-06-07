@@ -1,7 +1,7 @@
 all: build
 
 ENVVAR = GOOS=linux GOARCH=amd64
-TAG = v0.1.7
+TAG = v0.1.8
 APP_NAME = calico-accountant
 REPO = andreas-p
 IMAGE_TAG = $(REPO)/$(APP_NAME):$(TAG)

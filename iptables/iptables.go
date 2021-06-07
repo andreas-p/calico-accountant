@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"errors"
 	"io"
+	"os"
 	"os/exec"
 	"regexp"
 	"sort"
@@ -88,7 +89,12 @@ var (
 )
 
 func iptablesSave(interfaceToWorkload map[string]*apiv3.WorkloadEndpoint) ([]*Result, error) {
-	cmd := exec.Command("iptables-save", "-t", "filter", "-c")
+	saveCommand, ok := os.LookupEnv("IPTABLES_SAVE")
+	if !ok {
+		saveCommand = "iptables-save"
+	}
+
+	cmd := exec.Command(saveCommand, "-t", "filter", "-c")
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
